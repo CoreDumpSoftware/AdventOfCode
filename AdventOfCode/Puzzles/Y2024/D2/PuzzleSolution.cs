@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AdventOfCode.Services;
+﻿using AdventOfCode.Services;
 
 namespace AdventOfCode.Puzzles.Y2024.D2;
 
@@ -29,7 +24,7 @@ public class PuzzleSolution(string input) : IPuzzleSolution
 	private bool ValidateSequence(List<int> values)
 	{
 		var isAscending = false;
-		for (var i = 1; i < values.Count(); i++)
+		for (var i = 1; i < values.Count; i++)
 		{
 			var prev = values[i - 1];
 			var cur = values[i];
@@ -57,10 +52,12 @@ public class PuzzleSolution(string input) : IPuzzleSolution
 		foreach (var line in _input.Split('\n').Where(x => !string.IsNullOrEmpty(x)))
 		{
 			var row = line.Split(' ').Select(int.Parse).ToList();
+
 			if (ValidateSequence(row))
 				validCount++;
 			else
 			{
+				// brute force check by removing one item at a time and checking the list again
 				for (var i = 0; i < row.Count; i++)
 				{
 					var copy = new List<int>(row);
