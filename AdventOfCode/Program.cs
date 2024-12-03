@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using AdventOfCode.Configuration;
 using AdventOfCode.Services;
 using AdventOfCode.Services.Abstract;
@@ -31,8 +32,17 @@ public static class Program
 		var solution = await factory.GetPuzzleSolution(year, day);
 
 		Console.WriteLine($"Year: {year}, Day: {day}");
-		Console.WriteLine($"\tPart One: {await solution.PartOne()}");
-		Console.WriteLine($"\tPart Two: {await solution.PartTwo()}");
+
+		var stopwatch = new Stopwatch();
+		stopwatch.Start();
+		var answer = await solution.PartOne();
+		stopwatch.Stop();
+		Console.WriteLine($"\tPart One: {answer} (Elapsed: {stopwatch.Elapsed})");
+
+		stopwatch.Restart();
+		answer = await solution.PartTwo();
+		stopwatch.Stop();
+		Console.WriteLine($"\tPart Two: {answer} (Elapsed: {stopwatch.Elapsed})");
 	}
 
 	private static void SetupAppConfiguration(IConfigurationBuilder configBuilder)
