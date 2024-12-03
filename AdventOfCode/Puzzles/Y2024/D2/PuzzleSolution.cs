@@ -6,7 +6,7 @@ public class PuzzleSolution(string input) : IPuzzleSolution
 {
 	private readonly string _input = input;
 
-	public async Task<long> PartOne()
+	public async Task<object> PartOne()
 	{
 		var validCount = 0;
 
@@ -18,34 +18,10 @@ public class PuzzleSolution(string input) : IPuzzleSolution
 				validCount++;
 		}
 
-		return validCount;
+		return await Task.FromResult(validCount);
 	}
 
-	private bool ValidateSequence(List<int> values)
-	{
-		var isAscending = false;
-		for (var i = 1; i < values.Count; i++)
-		{
-			var prev = values[i - 1];
-			var cur = values[i];
-			if (i == 1)
-				isAscending = cur > prev;
-
-			var diff = cur - prev;
-			if (diff == 0 || Math.Abs(diff) > 3)
-				return false;
-
-			if (isAscending && diff < 0)
-				return false;
-
-			if (!isAscending && diff > 0)
-				return false;
-		}
-
-		return true;
-	}
-
-	public async Task<long> PartTwo()
+	public async Task<object> PartTwo()
 	{
 		var validCount = 0;
 
@@ -71,6 +47,30 @@ public class PuzzleSolution(string input) : IPuzzleSolution
 			}
 		}
 
-		return validCount;
+		return await Task.FromResult(validCount);
+	}
+
+	private bool ValidateSequence(List<int> values)
+	{
+		var isAscending = false;
+		for (var i = 1; i < values.Count; i++)
+		{
+			var prev = values[i - 1];
+			var cur = values[i];
+			if (i == 1)
+				isAscending = cur > prev;
+
+			var diff = cur - prev;
+			if (diff == 0 || Math.Abs(diff) > 3)
+				return false;
+
+			if (isAscending && diff < 0)
+				return false;
+
+			if (!isAscending && diff > 0)
+				return false;
+		}
+
+		return true;
 	}
 }

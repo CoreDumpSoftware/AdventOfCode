@@ -6,7 +6,7 @@ public class PuzzleSolution(string input) : IPuzzleSolution
 {
 	private readonly string _input = input;
 
-	public async Task<long> PartOne()
+	public async Task<object> PartOne()
 	{
 		long sum = 0;
 		var left = new List<int>();
@@ -30,10 +30,10 @@ public class PuzzleSolution(string input) : IPuzzleSolution
 			sum += Math.Abs(l - r);
 		}
 
-		return sum;
+		return await Task.FromResult(sum);
 	}
 
-	public async Task<long> PartTwo()
+	public async Task<object> PartTwo()
 	{
 		long sum = 0;
 		var left = new List<int>();
@@ -62,9 +62,9 @@ public class PuzzleSolution(string input) : IPuzzleSolution
 				? x
 				: 0;
 
-			sum += (item * count);
+			sum += item * count;
 		}
 
-		return sum;
+		return await Task.FromResult(sum);
 	}
 }

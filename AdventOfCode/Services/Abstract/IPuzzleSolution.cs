@@ -2,6 +2,6 @@
 
 public interface IPuzzleSolution
 {
-	Task<long> PartOne();
-	Task<long> PartTwo();
+	Task<object> PartOne();
+	Task<object> PartTwo();
 }
