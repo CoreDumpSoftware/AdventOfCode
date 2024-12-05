@@ -2,22 +2,29 @@
 
 namespace AdventOfCode.Puzzles.Y2024.D5;
 
-public class PuzzleSolution(string input) : IPuzzleSolution
+public class PuzzleSolution : IPuzzleSolution
 {
-	private readonly string _input = input;
+	private readonly string _input;
+	private readonly List<List<int>> _knownBad = [];
+	private readonly List<List<int>> _updates;
+	private readonly Dictionary<int, HashSet<int>> _pageOrderingRules;
+
+	public PuzzleSolution(string input)
+	{
+		_input = input;
+		(_pageOrderingRules, _updates) = ParseInput();
+	}
 
 	public async Task<object> PartOne()
 	{
-		var (pageOrderingRules, updates) = ParseInput();
-
 		var sum = 0L;
-		foreach (var update in updates)
+		foreach (var update in _updates)
 		{
 			var invalid = false;
 			for (var i = 1; i < update.Count; i++)
 			{
 				var current = update[i];
-				if (!pageOrderingRules.TryGetValue(current, out var pages))
+				if (!_pageOrderingRules.TryGetValue(current, out var pages))
 					continue;
 
 				for (var j = 0; j < i; j++)
@@ -34,7 +41,13 @@ public class PuzzleSolution(string input) : IPuzzleSolution
 			}
 
 			if (!invalid)
-				sum += update.Skip(update.Count() / 2).First();
+			{
+				sum += update[update.Count / 2];
+			}
+			else
+			{
+				_knownBad.Add(update);
+			}
 		}
 
 		return await Task.FromResult(sum);
@@ -42,16 +55,14 @@ public class PuzzleSolution(string input) : IPuzzleSolution
 
 	public async Task<object> PartTwo()
 	{
-		var (pageOrderingRules, updates) = ParseInput();
-
 		var sum = 0L;
-		foreach (var update in updates)
+		foreach (var update in _knownBad)
 		{
 			var hadError = false;
 			for (var i = 1; i < update.Count; i++)
 			{
 				var current = update[i];
-				if (!pageOrderingRules.TryGetValue(current, out var pages))
+				if (!_pageOrderingRules.TryGetValue(current, out var pages))
 					continue;
 
 				for (var j = 0; j < i; j++)
@@ -73,7 +84,7 @@ public class PuzzleSolution(string input) : IPuzzleSolution
 			}
 
 			if (hadError)
-				sum += update.Skip(update.Count() / 2).First();
+				sum += update[update.Count / 2];
 		}
 
 		return await Task.FromResult(sum);
