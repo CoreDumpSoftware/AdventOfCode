@@ -23,14 +23,13 @@ public class PuzzleSolution : IPuzzleSolution
 			var invalid = false;
 			for (var i = 1; i < update.Count; i++)
 			{
-				var current = update[i];
-				if (!_pageOrderingRules.TryGetValue(current, out var pages))
+				if (!_pageOrderingRules.TryGetValue(update[i], out var pages))
 					continue;
 
 				for (var j = 0; j < i; j++)
 				{
 					var prev = update[j];
-					invalid = pages.Contains(prev);
+					invalid = pages.Contains(update[j]);
 
 					if (invalid)
 						break;
