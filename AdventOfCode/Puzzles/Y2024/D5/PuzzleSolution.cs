@@ -6,8 +6,6 @@ public class PuzzleSolution(string input) : IPuzzleSolution
 {
 	private readonly string _input = input;
 
-
-
 	public async Task<object> PartOne()
 	{
 		var (pageOrderingRules, updates) = ParseInput();
