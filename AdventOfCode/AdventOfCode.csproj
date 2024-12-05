@@ -18,6 +18,7 @@
     <Content Include="..\..\..\..\AppData\Roaming\AdventOfCode\inputs\2024\day-2.txt" Link="Puzzles\Y2024\Inputs\day-2.txt" />
     <Content Include="..\..\..\..\AppData\Roaming\AdventOfCode\inputs\2024\day-3.txt" Link="Puzzles\Y2024\Inputs\day-3.txt" />
     <Content Include="..\..\..\..\AppData\Roaming\AdventOfCode\inputs\2024\day-4.txt" Link="Puzzles\Y2024\Inputs\day-4.txt" />
+    <Content Include="..\..\..\..\AppData\Roaming\AdventOfCode\inputs\2024\day-5.txt" Link="Puzzles\Y2024\Inputs\day-5.txt" />
   </ItemGroup>
 
   <ItemGroup>
