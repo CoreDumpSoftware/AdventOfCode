@@ -28,24 +28,17 @@ public class PuzzleSolution : IPuzzleSolution
 		var dir = _startingDirection;
 		var visited = new HashSet<int> { loc.GetHashCode() };
 
-		try
+		while (loc.X != 0 && loc.X != _boundary && loc.Y != 0 && loc.Y != _boundary)
 		{
-			while (loc.X != 0 && loc.X != _boundary && loc.Y != 0 && loc.Y != _boundary)
+			var next = loc.GetAdjacent(dir).Coordinate;
+			if (_matrix[next] == '#')
 			{
-				var next = loc.GetAdjacent(dir).Coordinate;
-				if (_matrix[next] == '#')
-				{
-					dir = dir.RotateClockwise();
-					next = loc.GetAdjacent(dir).Coordinate;
-				}
-
-				loc = next;
-				visited.Add(loc.GetHashCode());
+				dir = dir.RotateClockwise();
+				next = loc.GetAdjacent(dir).Coordinate;
 			}
-		}
-		catch (Exception ex)
-		{
-			throw new Exception("???", ex);
+
+			loc = next;
+			visited.Add(loc.GetHashCode());
 		}
 
 		return await Task.FromResult(visited.Count);

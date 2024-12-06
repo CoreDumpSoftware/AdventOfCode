@@ -46,4 +46,6 @@ public record Coordinate(int X, int Y)
 
 		return new(this + (x, y), dir);
 	}
+
+	public override string ToString() => $"({X}, {Y})";
 }
