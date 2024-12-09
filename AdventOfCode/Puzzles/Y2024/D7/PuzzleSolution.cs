@@ -1,4 +1,7 @@
-﻿using AdventOfCode.Services;
+﻿using System;
+using System.Numerics;
+using AdventOfCode.DataStructures;
+using AdventOfCode.Services;
 
 namespace AdventOfCode.Puzzles.Y2024.D7;
 
@@ -26,33 +29,30 @@ public class PuzzleSolution : IPuzzleSolution
 
 		foreach (var value in _values)
 		{
-			if (HasSolution(value.Expected, value.Values))
+			if (HasPartOneSolution(value.Expected, value.Values))
 				result += value.Expected;
 		}
-
-		//using var semaphore = new SemaphoreSlim(1);
-		//await Parallel.ForEachAsync(_values, async (x, _) =>
-		//{
-		//	if (HasSolution(x.Expected, x.values))
-		//	{
-		//		await semaphore.WaitAsync();
-		//		result += x.Expected;
-		//		semaphore.Release();
-		//	}
-		//});
 
 		return await Task.FromResult(result);
 	}
 
 	public async Task<object> PartTwo()
 	{
-		return await Task.FromResult(0);
+		var result = 0L;
+
+		foreach (var value in _values)
+		{
+			if (HasPartTwoSolution(value.Expected, value.Values))
+				result += value.Expected;
+		}
+
+		return await Task.FromResult(result);
 	}
 
-	private bool HasSolution(long expected, List<long> values)
+	private bool HasPartOneSolution(long expected, List<long> values)
 	{
 		var numberOfOperators = values.Count - 1;
-		var stop = Math.Pow(2, numberOfOperators);
+		var stop = (long)Math.Pow(2, numberOfOperators);
 		for (var i = 0; i < stop; i++)
 		{
 			var result = values[0];
@@ -70,4 +70,59 @@ public class PuzzleSolution : IPuzzleSolution
 
 		return false;
 	}
+
+	private bool HasPartTwoSolution(long expected, List<long> values)
+	{
+		var numberOfOperators = values.Count - 1;
+		var stop = (long)Math.Pow(3, numberOfOperators);
+		var permutationsState = new byte[numberOfOperators];
+
+		for (var i = 0; i < stop; i++)
+		{
+			var valuesCopy = new List<long>(values);
+			var operators = new List<byte>(numberOfOperators);
+
+			// Get the operators for this permutation run...
+			for (var j = numberOfOperators - 1; j >= 0; j--)
+				operators.Add(permutationsState[j]);
+
+			// Do the math
+			var result = valuesCopy[0];
+			for (var j = 0; j < operators.Count; j++)
+			{
+				var op = operators[j];
+
+				if (op == 0)
+					result += valuesCopy[j + 1];
+				else if (op == 1)
+					result *= valuesCopy[j + 1];
+				else
+					result = long.Parse(result.ToString() + valuesCopy[j + 1].ToString());
+			}
+
+			if (result == expected)
+				return true;
+
+			Increment(permutationsState);
+		}
+
+		return false;
+	}
+
+	private void Increment(byte[] operators)
+	{
+		operators[^1]++;
+		for (var i = operators.Length - 1; i >= 0 && operators[i] > 2; i--)
+		{
+			operators[i] = 0;
+			if (i > 0)
+				operators[i - 1]++;
+		}
+	}
+
+	private long ConcatNumbers(long left, long right)
+	{
+		return long.Parse(left.ToString() + right.ToString());
+	}
+
 }
