@@ -39,12 +39,17 @@ public class PuzzleSolution : IPuzzleSolution
 	public async Task<object> PartTwo()
 	{
 		var result = 0L;
+		var semaphore = new SemaphoreSlim(1);
 
-		foreach (var value in _values)
+		await Parallel.ForEachAsync(_values, async (x, _) =>
 		{
-			if (HasPartTwoSolution(value.Expected, value.Values))
-				result += value.Expected;
-		}
+			if (HasPartTwoSolution(x.Expected, x.Values))
+			{
+				await semaphore.WaitAsync();
+				result += x.Expected;
+				semaphore.Release();
+			}
+		});
 
 		return await Task.FromResult(result);
 	}
@@ -79,25 +84,18 @@ public class PuzzleSolution : IPuzzleSolution
 
 		for (var i = 0; i < stop; i++)
 		{
-			var valuesCopy = new List<long>(values);
-			var operators = new List<byte>(numberOfOperators);
-
-			// Get the operators for this permutation run...
-			for (var j = numberOfOperators - 1; j >= 0; j--)
-				operators.Add(permutationsState[j]);
-
 			// Do the math
-			var result = valuesCopy[0];
-			for (var j = 0; j < operators.Count; j++)
+			var result = values[0];
+			for (var j = 0; j < permutationsState.Length; j++)
 			{
-				var op = operators[j];
+				var op = permutationsState[j];
 
 				if (op == 0)
-					result += valuesCopy[j + 1];
+					result += values[j + 1];
 				else if (op == 1)
-					result *= valuesCopy[j + 1];
+					result *= values[j + 1];
 				else
-					result = long.Parse(result.ToString() + valuesCopy[j + 1].ToString());
+					result = long.Parse(result.ToString() + values[j + 1].ToString());
 			}
 
 			if (result == expected)
