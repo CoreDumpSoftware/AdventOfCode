@@ -65,4 +65,8 @@ public static class DirectionExtensions
 
 		_ => throw new ArgumentException(nameof(dir))
 	};
+
+	public static bool IsVertical(this Direction dir) => dir == Direction.Up || dir == Direction.Down;
+
+	public static bool IsHorizontal(this Direction dir) => dir == Direction.Left || dir == Direction.Right;
 }

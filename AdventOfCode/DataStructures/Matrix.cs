@@ -36,9 +36,9 @@ public class Matrix<T>
 	{
 		ThrowIfInvalid(row, 0);
 
-		for (var i = 0; i < Rows; i++)
+		for (var x = 0; x < Columns; x++)
 		{
-			yield return _data[Index(row, i)];
+			yield return _data[Index(x, row)];
 		}
 	}
 
@@ -122,4 +122,26 @@ public class Matrix<T>
 	}
 
 	private int Index(int x, int y) => y * Columns + x;
+}
+
+public static class CharMatrixExtensions
+{
+	/// <summary>
+	/// Naïve print method to print the matrix out to the console (does no formatting to make it pretty)
+	/// </summary>
+	public static void Print(this Matrix<char> matrix, Action<char> printFn = null!)
+	{
+		printFn ??= Console.Write;
+		for (var y = 0; y < matrix.Rows; y++)
+		{
+			foreach (var c in matrix.Row(y))
+			{
+				printFn(c);
+			};
+
+			Console.WriteLine();
+		}
+
+		Console.WriteLine();
+	}
 }
