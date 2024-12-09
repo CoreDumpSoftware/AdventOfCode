@@ -89,7 +89,7 @@ public class Matrix<T>
 				: exceptions.First();
 	}
 
-	public static Matrix<char> ParseTextToMatrix(string text)
+	public static Matrix<char> ParseTextToMatrix(string text, Action<Coordinate, char> onCellFn = null)
 	{
 		var lines = text.Split('\n');
 		Matrix<char> matrix = null!;
@@ -113,7 +113,10 @@ public class Matrix<T>
 
 			var x = 0;
 			foreach (var c in line)
+			{
+				onCellFn((x, y), c);
 				matrix[x++, y] = c;
+			}
 
 			y++;
 		}
@@ -138,6 +141,20 @@ public static class CharMatrixExtensions
 			{
 				printFn(c);
 			};
+
+			Console.WriteLine();
+		}
+
+		Console.WriteLine();
+	}
+
+	public static void Print(this Matrix<char> matrix, Action<Coordinate, char> printFn = null!)
+	{
+		printFn ??= (_, c) => Console.Write(c);
+		for (var y = 0; y < matrix.Rows; y++)
+		{
+			for (var x = 0; x < matrix.Columns; x++)
+				printFn((x, y), matrix[x, y]);
 
 			Console.WriteLine();
 		}
