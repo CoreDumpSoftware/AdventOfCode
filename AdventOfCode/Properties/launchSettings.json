@@ -2,11 +2,11 @@
   "profiles": {
     "AdventOfCode": {
       "commandName": "Project",
-      "commandLineArgs": "--Year=2024 --Day=9"
+      "commandLineArgs": "--Year=2024 --Day=10"
     },
     "Container (Dockerfile)": {
       "commandName": "Docker",
-      "commandLineArgs": "--Year=2024 --Day=9"
+      "commandLineArgs": "--Year=2024 --Day=10"
     }
   }
 }
