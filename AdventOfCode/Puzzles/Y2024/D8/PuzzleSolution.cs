@@ -34,7 +34,7 @@ public class PuzzleSolution : IPuzzleSolution
 			{
 				for (var j = i + 1; j < coordinates.Count; j++)
 				{
-					var (leftAntinode, rightAntinode) = CalculateAntinodes(coordinates[i], coordinates[j]);
+					var (leftAntinode, rightAntinode) = CalculateImmediateAntinodes(coordinates[i], coordinates[j]);
 
 					if (_matrix.IsValid(leftAntinode))
 						antinodes.Add(leftAntinode);
@@ -50,10 +50,54 @@ public class PuzzleSolution : IPuzzleSolution
 
 	public async Task<object> PartTwo()
 	{
-		return await Task.FromResult(0);
+		var antinodes = new HashSet<Coordinate>();
+
+		foreach (var (frequency, coordinates) in frequencyCoordinates)
+		{
+			// for each coordinate, check the other recorded coordinates to find antinodes
+			for (var i = 0; i < coordinates.Count; i++)
+			{
+				for (var j = i + 1; j < coordinates.Count; j++)
+				{
+					var a = coordinates[i];
+					var b = coordinates[j];
+
+					var leftDelta = a - b;
+					var rightDelta = b - a;
+
+					var leftAntinode = a + rightDelta + rightDelta;
+					var rightAntinode = b + leftDelta + leftDelta;
+
+					antinodes.Add(a);
+					antinodes.Add(b);
+
+					while (_matrix.IsValid(leftAntinode))
+					{
+						antinodes.Add(leftAntinode);
+						leftAntinode += rightDelta;
+					}
+
+					while (_matrix.IsValid(rightAntinode))
+					{
+						antinodes.Add(rightAntinode);
+						rightAntinode += leftDelta;
+					}
+				}
+			}
+		}
+
+		foreach (var antinode in antinodes)
+		{
+			if (_matrix[antinode] == '.')
+				_matrix[antinode] = '#';
+		}
+
+		_matrix.Print(Console.Write);
+
+		return await Task.FromResult(antinodes.Count);
 	}
 
-	private (Coordinate, Coordinate) CalculateAntinodes(Coordinate a, Coordinate b)
+	private (Coordinate, Coordinate) CalculateImmediateAntinodes(Coordinate a, Coordinate b)
 	{
 		var leftDelta = a - b;
 		var rightDelta = b - a;
