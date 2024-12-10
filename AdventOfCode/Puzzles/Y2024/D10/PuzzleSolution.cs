@@ -29,7 +29,7 @@ public class PuzzleSolution : IPuzzleSolution
 		foreach (var trailHead in _trailHeads)
 		{
 			var endsFound = new HashSet<Coordinate>();
-			Navigate(trailHead, 1, endsFound);
+			NavigatePartOne(trailHead, 1, endsFound);
 
 			totalScore += endsFound.Count;
 		}
@@ -37,7 +37,7 @@ public class PuzzleSolution : IPuzzleSolution
 		return await Task.FromResult(totalScore);
 	}
 
-	private void Navigate(Coordinate coordinate, int toFind, HashSet<Coordinate> endsFound)
+	private void NavigatePartOne(Coordinate coordinate, int toFind, HashSet<Coordinate> endsFound)
 	{
 		char charToFind = (char)(toFind + '0');
 		var adjacents = _matrix.GetAdjacents(coordinate, Enums.AdjacentType.Orthogonal)
@@ -49,13 +49,41 @@ public class PuzzleSolution : IPuzzleSolution
 			if (toFind == 9)
 				endsFound.Add(adjacent.Coordinate);
 			else
-				Navigate(adjacent.Coordinate, toFind + 1, endsFound);
+				NavigatePartOne(adjacent.Coordinate, toFind + 1, endsFound);
 		}
 	}
 
 	public async Task<object> PartTwo()
 	{
-		return await Task.FromResult(0);
+		var totalScore = 0;
+		foreach (var trailHead in _trailHeads)
+		{
+			List<List<Coordinate>> knownPaths = [];
+			NavigatePartTwo(trailHead, 1, knownPaths, []);
+			totalScore += knownPaths.Count;
+		}
+
+		return await Task.FromResult(totalScore);
 	}
 
+	private void NavigatePartTwo(Coordinate coordinate, int toFind, List<List<Coordinate>> knownPaths, List<Coordinate> currentPath)
+	{
+		currentPath.Add(coordinate);
+		char charToFind = (char)(toFind + '0');
+		var adjacents = _matrix.GetAdjacents(coordinate, Enums.AdjacentType.Orthogonal)
+			.Where(a => _matrix[a.Coordinate] == charToFind)
+			.ToArray();
+
+		foreach (var adjacent in adjacents)
+		{
+			if (toFind == 9)
+			{
+				knownPaths.Add(currentPath);
+			}
+			else
+			{
+				NavigatePartTwo(adjacent.Coordinate, toFind + 1, knownPaths, new List<Coordinate>(currentPath));
+			}
+		}
+	}
 }
